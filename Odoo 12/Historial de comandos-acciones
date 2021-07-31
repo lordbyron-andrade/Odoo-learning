@@ -1,0 +1,161 @@
+Se esta trabajando con la version 12 de Odoo, que se encuentra en la maquina virtual
+de Debian 8, el correo es luis.javier.kgm@gmail.com y la contraseña es ljac1978
+
+Procedmiento 1:
+Entrar en modo desarrollador:
+  1.- Hacemos clic en el icono de 4 cuadros juntos y vamos a la opción ajustes
+  2.- En el Dashboard, se elige la opción "Activar modo desarrollador"
+
+Objetivo: Se va a crear una aplicación del tipo todo, y modificar el modulo de
+contactos, para definir las personas que tengan acceso a este modulo
+
+Procedimiento 2: Agregar un campo al modelo con el editor visual.
+
+1.- Repetimos el procedimiento 1 para entrar en modo desarrollador.
+2.- Vamos de nuevo al menu de Ajustes.
+3.- Vamos al menú Técnico.
+4.- Seleccionamos de la categoría "Estructura de la base de datos", la opción
+    "Modelos"
+5.- Buscamos el modelo "res.partner"
+6.- Hacemos clic sobre este moedelo para que muestre la vista formulario para
+    este registro.
+7.- Hacemos clic en el botón editar.
+8.- Al final de la lista de campos, en la primera pantalla se encuentra la opción
+    "Agregar línea".
+9.- En el nombre del campo agregamos : "x_es_miembro_todo", etiqueta "Es miembro
+    todo?", Tipo de campo "booleano"
+10.-Hacemos clic en el boton "Guardar y cerrar" y luego en el botón "Guardar"
+    que representa el botón guardar de la pantalla de la forma para el registro
+    del modelo.
+
+** Procedimiento 2: Cuando se usa el editor visual del sistema se tienen que
+   respetar algunas reglas para los nombres de campos y vistas.
+
+Procedimiento 3: Agregar un campo a la vista del formulario del modelo contacto.
+
+1.- Dentro del mismo formulario, vamos a la pestaña vistas, aquí podremos observar
+    cuantas diferentes vistas pertenecen al modelo.
+2.- Deseamos modificar el elemento visual en donde aparece el empleado para poder
+    agregar el campo, pero si lo buscamos en las vistas del modelo, puede ser un
+    poco ambiguo, vamos a ir a la aplicación de contactos, después vamos a seleccionar
+    a cualquiera de los empleados y haremos clic sobre este para que se abra la
+    vista de formlario que deseamos modificar.
+3.- Una vez que ya estamos en la vista que deseamos modificar, hacemos clic en
+    el icono de las herramientas de desarrollo y luego seleccionamos la opción
+    "Editar vista: Formulario".
+4.- Vamos a crear una vista heredada, para respetar los cambios que se puedan hacer
+    a la vista principal, primero seleccioanmos un punto de anclaje para nuestras
+    modificaciones, vamos a la pestaña "Estructura" que contiene el código XML para
+    formar la estructura de la vista actual y seleccionamos el campo
+    "field name="category_id" como punto de anclaje para nuestra modificación,
+    copiamos este código al portapapeles para usarlo después.
+5.- Vamos a la pestaña "Vistas heredadas" y seleccionamos "Agregar línea" para
+    crear una nueva vista heredada, en el nombre ponemos "res.partner.todo" y en
+    estructura colocamos el siguiente código:
+
+    <field name="category_id" position="after"><field name="x_es_miembro_todo" /></field>
+
+6.- Hacemos clic en "Guardar y cerrar" y luego en "Guardar" de la forma principal
+
+Procedimiento 3: Crear un nuevo modelo.
+
+1.- Vamos al menú de los cuadros, elegimos ajustes, luego vamos al menú "Técnico"
+2.- Dentro de la categoría de "Estructura de la base de datos" elegimos la opción
+    "Modelos" y en esta ocasión presionamos el botón "Crear".
+3.- En el campo "Descripción del modelo" tecleamos "Elementos ToDo", en el campo
+    "Modelo" tecleamos "x_elemento_todo".
+4.- Hacemos clic en "Guardar"
+
+Procedimiento 4: Agregar campos al nuevo modelo.
+
+1.- Dentro de la misma vista formulario del modelo que acabamos de crear, Hacemos
+    clic sobre el botón "Editar".
+2.- Al final de la lista de campos, hacemos clic en "Agregar línea"
+3.- En "Nombre del campo" tecleamos "x_terminado", en "Etiqueta del campo"
+    "Todo Terminado?", en "Tipo de campo" "booleano"
+4.- Hacemos clic en "Guardar y nuevo".
+5.- En "Nombre del campo" tecleamos "x_id_miembros", en "Etiqueta del campo"
+    "Equipo", en "Tipo de campo" "many2many", en el campo "Relación del objeto"
+    "res.partner" y en el campo "Dominio" "[('x_es_miembro_todo', '=', True )]".
+6.- Hacemos clic en "Guardar y cerrar".
+7.- Hacemos clic en el botón "Guardar" para hacer permanentes los cambios dentro
+    del registro del modelo.
+
+Procedimiento 5: Crear un nuevo grupo de seguridad.
+
+1.- Vamos al menú de cuadros y seleccionamos la opción ajustes.
+2.- Después vamos al menú "Usuarios y compañías" y seleccionamos la opción
+    "Grupos".
+3.- Hacemos clic en el botón "Crear".
+4.- El campo "Aplicación" lo dejamos en blanco, en el campo "Nombre" tecleamos
+    "Usuario TODO", en la pestaña "Heredado" hacemos clic en "Agregar línea" y
+    seleccionamos "Tipos de usuarios / Usuario interno".
+5.- Hacemos clic en "Guardar".
+
+Procedimiento 6: Crear una lista de acceso par el modelo creado dentro del grupo
+                 recién generado.
+
+1.- Dentro del grupo "USuario TODO" vamos a la pestaña "Permisos de acceso".
+2.- Hacemos clic en "Agregar línea".
+3.- En la columna "Nombre" tecleamos "Acceso a elementos TODO".
+4.- En la columna "Objeto" seleccionamos "x_elemento_todo".
+5.- Autorizamos todos los permisos disponibles, haciendo clic sobre los checkboxes.
+
+Procedimiento 7: Crear una regla de seguridad para registros.
+1.- Vamos a la opción del menú que se encuentra en "Ajustes" -> "Técnico" ->
+    "Seguridad" -> "Reglas de registro"
+2.- Hacemos clic en el botón "Crear".
+3.- En el campo "Nombre" -> "Elementos TODO propios", "Objeto" -> "Elementos TODO"
+    "Definición de regla (filtro de dominio)" -> "[('create_uid', '=', user.id)]",
+    "Grupos" -> "Usuario TODO"
+
+Procedimiento 8: Crear un menú.
+
+1.- Vamos a la opción del menú que se encuentra en "Ajustes" -> "Técnico" ->
+    "Elementos de menú".
+2.- Hacemos clic en el botón "Crear".
+3.- En el campo "Menú" -> "TODO", "Menú padre" -> "", "Acción" ->
+    "ir.actions.act_window" | "Crear y editar"
+4.- "Nombre" -> "Elementos TODO", "Objeto" -> "x_elemento_todo"
+5.- Hacemos clic en el botón "Guardar" y luego "Guardar" para que los cambios seleccioanmos
+    permanentes.
+
+Procedimiento 9: Crear una vista de lista.
+
+1.- Vamos a la opción del menú que se encuentra en "Ajustes" -> "Técnico" ->
+    "Interfaz de usuario" -> "Vistas"
+2.- Hacemos clic en el botón "Crear".
+3.- "Nombre de la vista" -> "Lista de TODOS", "Tipo de vista" -> "Árbol",
+    "Modelo" -> "x_elemento_todo"
+4.- En el campo "Estructura"
+        <tree>
+        <field name="x_name"/>
+        <field name="x_terminado"/>
+        </tree>
+
+Procedimiento 10: Crear una vista formulario:
+
+1.- Vamos a la opción del menú que se encuentra en "Ajustes" -> "Técnico" ->
+    "Interfaz de usuario" -> "Vistas"
+2.- Hacemos clic en el botón "Crear".
+3.- "Nombre de la vista" -> "Lista de TODOS", "Tipo de vista" -> "Formulario",
+    "Modelo" -> "x_elemento_todo"
+4.- En el campo "Estructura" tecleamos
+        <form>
+          <group>
+            <field name="x_name"/>
+            <field name="x_terminado"/>
+            <field name="x_id_miembros"
+                   widget="many2many_tags"
+                   context="{'x_es_miembro_todo': True}"/>
+
+          </group>
+        </form>
+
+Una vez terminadas las vistas de Lista y Formulario substituiran a la vista por
+default que muestra el sistema
+
+
+    x_name
+    x_terminado
+    x_id_miembros
